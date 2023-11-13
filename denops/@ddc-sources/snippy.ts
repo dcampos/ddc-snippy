@@ -1,21 +1,29 @@
 import {
   BaseSource,
-  Candidate,
-  Context,
-} from "https://deno.land/x/ddc_vim@v0.13.0/types.ts";
-import { Denops, fn } from "https://deno.land/x/ddc_vim@v0.13.0/deps.ts#^";
+  Item
+} from "https://deno.land/x/ddc_vim@v4.1.0/types.ts";
+import {
+  GatherArguments,
+  OnCompleteDoneArguments,
+} from "https://deno.land/x/ddc_vim@v4.1.0/base/source.ts";
 
-export class Source extends BaseSource<{}> {
-  async gatherCandidates(
-    args: GatherCandidatesArguments<Params>,
-  ): Promise<Candidate[]> {
-    this.counter = (this.counter + 1) % 100;
+type Params = Record<never, never>;
 
+type UserData = {
+  snippy: {
+    snippet: string;
+  }
+}
+
+export class Source extends BaseSource<Params> {
+  async gather(
+    args: GatherArguments<Params>
+  ): Promise<Item[]> {
     const result = await args.denops.call(
-        "luaeval",
-        "require('snippy').get_completion_items()",
-        {},
-      );
+      "luaeval",
+      "require('snippy').get_completion_items()",
+      {},
+    );
 
     if (result?.length == null) {
       return [];
@@ -24,5 +32,17 @@ export class Source extends BaseSource<{}> {
     return result
   }
 
-  params(): {} { return {}; }
+  async onCompleteDone({
+    denops,
+  }: OnCompleteDoneArguments<Params, UserData>): Promise<void> {
+    await denops.call(
+      "luaeval",
+      "require('snippy').complete_done()",
+      {},
+    );
+
+    await denops.call("ddc#skip_next_complete");
+  }
+
+  params(): Params { return {}; }
 }
