@@ -17,7 +17,11 @@ vim.fn['ddc#custom#patch_global']('sources', { 'snippy' })
 Enable expanding LSP snippets completed by [ddc-source-nvim-lsp](https://github.com/Shougo/ddc-source-nvim-lsp):
 
 ```lua
-vim.fn["denops#callback#register"](function(body)
-  require('snippy').expand_snippet(body)
-end)
+vim.fn['ddc#custom#patch_global']('sourceParams', {
+    ['nvim-lsp'] = {
+        snippetEngine = vim.fn['denops#callback#register'](function(body)
+            require('snippy').expand_snippet(body)
+        end),
+    }
+})
 ```
