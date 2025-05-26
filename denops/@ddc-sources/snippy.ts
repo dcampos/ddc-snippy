@@ -32,7 +32,7 @@ export class Source extends BaseSource<Params> {
     return result
   }
 
-  async onCompleteDone({
+  override async onCompleteDone({
     denops,
   }: OnCompleteDoneArguments<Params, UserData>): Promise<void> {
     await denops.call(
