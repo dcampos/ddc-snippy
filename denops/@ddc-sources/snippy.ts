@@ -1,11 +1,11 @@
 import {
-  BaseSource,
   Item
-} from "https://deno.land/x/ddc_vim@v4.1.0/types.ts";
+} from "jsr:@shougo/ddc-vim@~9.4.0/types";
 import {
+  BaseSource,
   GatherArguments,
   OnCompleteDoneArguments,
-} from "https://deno.land/x/ddc_vim@v4.1.0/base/source.ts";
+} from "jsr:@shougo/ddc-vim@~9.4.0/source";
 
 type Params = Record<never, never>;
 
